@@ -1,0 +1,137 @@
+/* 1. Reset e Tela Cheia */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Impede a rolagem da página inteira, o chat rola sozinho */
+  font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+  background-color: #0f172a; /* Mantive o seu fundo azul escuro */
+}
+
+/* 2. Menu de Conexão (Fica centralizado) */
+#menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  gap: 15px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* 3. Estilo Geral de Áreas e Botões do Menu */
+.area {
+  width: 100%;
+  max-width: 500px;
+  height: 100px;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  color: #38bdf8;
+  padding: 12px;
+  border-radius: 8px;
+  font-family: monospace;
+}
+
+button {
+  width: 100%;
+  max-width: 500px;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+#criarHost { background-color: #6366f1; color: white; }
+#gerarResposta { background-color: #f59e0b; color: white; }
+#confirmarResposta { background-color: #10b981; color: white; }
+
+/* 4. O Container do Chat (Ocupa a tela toda quando aparece) */
+#chat {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh; /* Altura dinâmica da tela */
+  width: 100vw;
+  background-color: #0b141a; /* Escuro estilo WhatsApp Dark */
+}
+
+.header-chat {
+  background: #202c33;
+  color: #e9edef;
+  padding: 15px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Janela onde as mensagens aparecem */
+#chat2 {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); /* Wallpaper opcional */
+  background-blend-mode: overlay;
+}
+
+/* 5. Rodapé de Envio */
+.rodape-enviar {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: #202c33;
+  gap: 10px;
+}
+
+#mensagem {
+  flex: 1;
+  background-color: #2a3942;
+  color: white;
+  border-radius: 20px;
+  padding: 12px 15px;
+  border: none;
+  resize: none;
+  height: 45px;
+  font-size: 16px;
+  outline: none;
+}
+
+#enviar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #00a884;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* 6. Bolhas de Mensagem */
+.msg {
+  max-width: 80%;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 15px;
+  line-height: 1.4;
+  position: relative;
+  word-wrap: break-word;
+}
+
+.recebida {
+  align-self: flex-start;
+  background-color: #202c33;
+  color: #e9edef;
+  border-top-left-radius: 0;
+}
+
+.enviada {
+  align-self: flex-end;
+  background-color: #005c4b;
+  color: #e9edef;
+  border-top-right-radius: 0;
+}
