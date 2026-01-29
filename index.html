@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="styles/style.css"/>
+  <title>webRTC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
+
+</head>
+<body>
+  
+  <div id="menu">
+    <button id="criarHost">host</button>
+    
+    <textarea id="outputOferta" class="area"></textarea>
+  
+    <textarea placeholder="colocar oferta" id="inputOferta" class="area"></textarea>
+    
+    <button id="gerarResposta">gerar resposta</button>
+    
+    <textarea placeholder="colocar oferta" id="outputResposta" class="area"></textarea>
+    
+    <textarea placeholder="colocar resposta" id="inputResposta" class="area"></textarea>
+    
+    <button id="confirmarResposta">confirmar</button>
+  </div>
+  
+  <div id="chat" class="container-chat" style="display: none;">
+  <header class="header-chat">
+    <span>Conectado 🟢</span>
+  </header>
+
+  <div id="chat2" class="janela-mensagens">
+    </div>
+
+  <div class="rodape-enviar">
+    <textarea id="mensagem" placeholder="Digite uma mensagem..."></textarea>
+    <button id="enviar">Enviar</button>
+  </div>
+</div>
+
+  
+  <script>
+  const pc = new RTCPeerConnection({
+    iceServers: []
+  });
+  
+  let meuCanal;
+  
+  async function criarHost() {
+    meuCanal = pc.createDataChannel('meuCanal');
+    const oferta = await pc.createOffer();
+    await pc.setLocalDescription(oferta);
+    
+    pc.onicegatheringstatechange = () => {
+      if (pc.iceGatheringState === "complete") {
+         document.getElementById('outputOferta').value = JSON.stringify(oferta);
+      }
+    }
+    meuCanal.onmessage = (e) => {
+      const mensagem = e.data;
+  const chatContainer = document.getElementById('chat2');
+
+  const novaBolha = document.createElement('div');
+
+  
+  novaBolha.classList.add('msg', 'recebida');
+
+  
+  novaBolha.innerText = mensagem;
+  
+  chatContainer.appendChild(novaBolha);
+
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    };
+  }
+  
+  async function gerarResposta() {
+    const oferta = document.getElementById('inputOferta').value;
+    const objOferta = JSON.parse(oferta);
+    await pc.setRemoteDescription(objOferta);
+    const resposta = await pc.createAnswer();    
+    await pc.setLocalDescription(resposta);
+    
+    pc.onicegatheringstatechange = () => {
+      if (pc.iceGatheringState === "complete") {
+        document.getElementById('outputResposta').value = JSON.stringify(pc.localDescription);
+      }
+    }
+  }
+  
+  async function confirmarResposta() {
+    const resposta = document.getElementById('inputResposta').value;
+    const objResposta = JSON.parse(resposta);
+    await pc.setRemoteDescription(objResposta);
+  }
+  
+  async function enviar() {
+  const campo = document.getElementById('mensagem');
+  const texto = campo.value;
+
+  if (texto.trim() !== "") {
+    
+    meuCanal.send(texto); 
+  
+    const chatContainer = document.getElementById('chat2');
+    const novaMensagem = document.createElement('div');
+    
+    
+    novaMensagem.classList.add('msg', 'enviada'); 
+    novaMensagem.innerText = texto;
+    
+    chatContainer.appendChild(novaMensagem);
+
+    campo.value = "";
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+}
+  
+  document.getElementById('criarHost').addEventListener('click', () => {
+    criarHost();
+  });
+  
+  document.getElementById('gerarResposta').addEventListener('click', () => {
+    gerarResposta();
+  });
+  
+  document.getElementById('confirmarResposta').addEventListener('click', () => {
+    confirmarResposta();
+  });
+  
+  document.getElementById('enviar').addEventListener('click', () => {
+    enviar();
+  });
+  
+  pc.onconnectionstatechange = () => {
+    if (pc.connectionState === 'connected') {
+      alert("ESTAMOS CONECTADOS! 🎉");
+      document.getElementById('menu').style.display = 'none';
+      document.getElementById('chat').style.display = 'block';
+    }
+  };
+  
+  pc.ondatachannel = (event) => {
+    meuCanal = event.channel;
+    
+    meuCanal.onmessage = (e) => {
+  const mensagem = e.data;
+  const chatContainer = document.getElementById('chat2');
+
+  const novaBolha = document.createElement('div');
+
+  
+  novaBolha.classList.add('msg', 'recebida');
+
+  
+  novaBolha.innerText = mensagem;
+  
+  chatContainer.appendChild(novaBolha);
+
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    };
+
+  };
+  </script>
+</body>
+</html>
